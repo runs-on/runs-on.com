@@ -1,0 +1,11 @@
+---
+position: 2
+nav_title: Blog
+title: All about RunsOn & GitHub Action Runners
+---
+
+<% sorted_posts.reverse.each do |page| %>
+<ul>
+  <li><span class="date"><%= l(Date.parse(page.data.created_at), format: :default) %></span> <%= link_to_page(page) %></li>
+</ul>
+<% end %>

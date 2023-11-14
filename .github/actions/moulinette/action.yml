@@ -1,0 +1,39 @@
+name: 'moulinette'
+description: 'Turn GitHub issues into blog posts'
+author: 'Cyril Rohr'
+
+inputs:
+  github-token:
+    description: GitHub token to access GitHub API
+    required: true
+  github-token-for-private-images:
+    description: GitHub PAT token to access private issue image attachments
+    required: false
+  published-label:
+    description: 'Label for published posts'
+    required: false
+    default: 'published'
+  issue-extension:
+    description: 'Extension to append to generated post file'
+    required: false
+  issue-path:
+    description: 'Where to write the generated post file'
+    required: false
+  image-path:
+    description: 'Where to write the post image files'
+    required: false
+  image-tag:
+    description: 'How to replace images'
+    required: false
+  openai-api-key:
+    description: 'OpenAI API key. Leave blank to skip AI features.'
+    required: false
+    default: null
+  ai-description-prompt:
+    description: 'Prompt to use when generating SEO descriptions with OpenAI'
+    required: false
+    default: null
+
+runs:
+  using: 'node20'
+  main: dist/index.js

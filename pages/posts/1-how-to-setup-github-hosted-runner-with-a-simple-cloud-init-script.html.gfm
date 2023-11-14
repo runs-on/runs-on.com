@@ -1,0 +1,58 @@
+---
+slug: "how-to-setup-github-hosted-runner-with-a-simple-cloud-init-script"
+title: "How to setup GitHub hosted runner with a simple cloud-init script"
+author: "crohr"
+reading_time: 49
+tags: []
+created_at: "2023-11-14T17:50:29Z"
+updated_at: "2023-11-14T17:51:11Z"
+---
+Bash script, that can also be used as cloud-init script for launching GitHub hosted runners non-interactively:
+
+```bash
+#!/bin/bash -ex
+
+set -o pipefail
+
+RUNNER_ORG=YOUR_ORG
+RUNNER_TOKEN=YOUR_TOKEN
+RUNNER_LABELS=self-hosted,x64,docker
+RUNNER_VERSION=2.311.0
+
+# Install docker, then additional packages and stuff:
+apt update -qq
+apt install -y ruby awscli
+curl https://nodejs.org/dist/v20.9.0/node-v20.9.0-linux-x64.tar.xz | tar -xJf - --strip=1 -C /usr/local/
+
+curl https://get.docker.com | sh
+
+cat > /etc/cron.daily/docker-prune <<EOF
+docker image prune -a --filter="until=96h" --force
+docker volume prune --force
+EOF
+chmod a+x /etc/cron.daily/docker-prune
+
+# Create dedicated user
+useradd -m -d /home/runner -s /bin/bash runner
+usermod -G docker runner
+
+# Download and install runner script
+cd /home/runner
+mkdir -p actions-runner
+cd actions-runner
+curl -o actions-runner-linux-x64-$RUNNER_VERSION.tar.gz -L https://github.com/actions/runner/releases/download/v$RUNNER_VERSION/actions-runner-linux-x64-$RUNNER_VERSION.tar.gz
+tar xzf ./actions-runner-linux-x64-$RUNNER_VERSION.tar.gz
+
+# Configure runner
+su - runner -c "
+/home/runner/actions-runner/config.sh --url https://github.com/$RUNNER_ORG --token $RUNNER_TOKEN --labels $RUNNER_LABELS --unattended
+"
+
+# Setup systemd scripts
+cd /home/runner/actions-runner/
+./svc.sh install runner
+./svc.sh start
+./svc.sh status
+```
+
+You should be good to go!

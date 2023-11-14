@@ -1,0 +1,64 @@
+---
+position: 1
+nav_title: Home
+title: "runs-on: fast, cheap, self-hosted GitHub Action runners"
+---
+
+<figure style="margin: 0 auto;max-width:400px;">
+  <%= image_tag "landing/runs-on3-square.png", alt: "runs-on.com logo" %>
+</figure>
+
+<p class="notice"><strong>runs-on</strong> is a service that dynamically launches powerful hosted runners of any size, for any GitHub repository.</p>
+<p>In your GitHub Action workflow files, instead of using the default base runner:</p>
+<pre><code>runs-on: ubuntu-latest</code></pre>
+<p>You would use:</p>
+<pre><code>runs-on: [self-hosted,aws,ubuntu-22,x64,16cpu,32ram]</code></pre>
+<p>And then your workflow will execute with a 16 vCPUs / 32GB RAM instance. After the workflow ends, the instance will automatically terminates.</p>
+
+<h2>Make that slow test suite fly</h2>
+<p>GitHub provides base runners with a most 8GB of RAM and 2vCPUs. Bigger runners are available, but they require a Team or Enterprise plan, as well as not being cheap (e.g. a 16 core linux VM is <a href="https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions#per-minute-rates">sold at $0.064/min</a>, i.e. theoretical cost of $2700/month if fully used).</p>
+<p>From various experiences at smaller companies, I believe there is a need to provide a simple service that auto-magically provision runners of various sizes (and architectures?), for a much cheaper price than what GitHub provides.</p>
+
+<h2>Ephemeral self-hosted runners, in your own AWS account</h2>
+<p>We can use the workflow events emitted by GitHub to auto-provision runners, on-premise:</p>
+<ul>
+  <li>You deploy the service on a single server within your infrastructure, in a fire and forget manner.</li>
+  <li>The service connects to any of your GitHub repositories, and listens for incoming workflow events.</li>
+  <li>When a workflow specifies a custom runner, it provisions an on-demand VM, in your own cloud provider account.</li>
+</ul>
+
+<p>From start to end, everything (service + VMs) runs in your own infrastructure, which is a big win in terms of security and observability.</p>
+
+<p>AWS will be the first provider to be supported: with spot pricing, per-minute billing and large choice of instance types and architectures, it is very efficient in terms of cost/performance for CI workflows.</p>
+<p>Hetzner would be the next clear choice, since their cloud offering has a great performance/price ratio (although no per-minute billing).</p>
+
+<h2>Design choices</h2>
+<ul>
+  <li>Service can be launched with a single command, and runs on a $5 VM.</li>
+  <li>Service must make it easy to connect a GitHub account, and add specific GitHub repositories to listen to.</li>
+  <li>Service exposes a simple UI for management and observability purposes. HTTPS is required.</li>
+  <li>Service allows you to specify a max monthly bill. Runners are no longer started once this limit is reached.</li>
+</ul>
+
+<h2>Pricing</h2>
+<p>The code will be open-source, possibly with a commercial license required after 30+ days of use. This formula seems to work well for my other project <a href="https://pullpreview.com">PullPreview</a>.</p>
+
+<h2>Installation (coming soon)</h2>
+
+<p>Service is compatible with any server running Ubuntu 22.04 LTS. A domain (e.g. <code>runners.example.com</code>) must point to the server. We strongly recommend using a dedicated VM for that service.</p>
+
+<ol>
+  <li>
+    Download the script:
+    <pre><code>curl -O https://runs-on.com/install.sh</code></pre>
+  </li>
+
+  <li>
+    Inspect the script to ensure it's safe to run.
+  </li>
+
+  <li>
+    Run the script with the required arguments:
+    <pre><code>sudo sh ./install.sh --domain runners.example.com</code></pre>
+  </li>
+</ol>
