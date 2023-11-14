@@ -12,7 +12,6 @@ inputs:
   published-label:
     description: 'Label for published posts'
     required: false
-    default: 'published'
   issue-extension:
     description: 'Extension to append to generated post file'
     required: false
