@@ -1,14 +1,17 @@
 ---
 slug: "how-to-setup-github-hosted-runner-with-a-simple-cloud-init-script"
 title: "How to setup GitHub hosted runner with a simple cloud-init script"
-author: "crohr"
-reading_time: 106
 tags: []
+url: "https://github.com/runs-on/runs-on.com/issues/1"
+comments_count: 0
+author_name: "crohr"
+author_avatar_url: "https://avatars.githubusercontent.com/u/6114?v=4"
+reading_time: 106
 created_at: "2023-11-14T17:50:29Z"
 updated_at: "2023-11-14T19:32:27Z"
+layout: "post"
 description: "Learn how to launch GitHub hosted runners non-interactively with a Bash script that doubles as a cloud-init script. This tutorial provides step-by-step instructions for installing Docker, additional packages, and creating a dedicated user. Streamline your workflow with self-hosted runners."
 ---
-<!-- description: Learn how to launch GitHub hosted runners non-interactively with a Bash script that doubles as a cloud-init script. This tutorial provides step-by-step instructions for installing Docker, additional packages, and creating a dedicated user. Streamline your workflow with self-hosted runners. -->
 <!-- description: Learn how to launch GitHub hosted runners non-interactively with a Bash script that doubles as a cloud-init script. This tutorial provides a step-by-step guide for installing Docker, additional packages, and creating a dedicated user. It also covers downloading and installing the runner script, configuring the runner, and setting up systemd scripts. Streamline your workflow with self-hosted runners. -->
 <!-- description: Learn how to launch GitHub hosted runners non-interactively with a Bash script that can also be used as a cloud-init script. This blog post provides step-by-step instructions for installing Docker, additional packages, and creating a dedicated user. It also covers how to download and install the runner script, configure the runner, and set up systemd scripts. Get ready to streamline your workflow with self-hosted runners. -->
 Bash script, that can also be used as cloud-init script for launching GitHub hosted runners non-interactively:
