@@ -31,6 +31,9 @@ let OPENAI_API_KEY;
 if (core.getInput('openai-api-key')?.length > 0) {
   console.log("Using OpenAI API key from input")
   OPENAI_API_KEY = core.getInput('openai-api-key');
+} else if (process.env.OPENAI_API_KEY?.length > 0) {
+  console.log("Using OpenAI API key from environment")
+  OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 } else {
   console.log("No OpenAI key given")
 }
@@ -95,14 +98,18 @@ async function updateIssue(issue) {
   const frontMatterData = {
     slug: issueSlug,
     title: issue.title,
-    author: issue.user.login,
-    reading_time: calculateReadingSeconds(issueContent),
     tags: tags,
+    url: issue.html_url,
+    comments_count: issue.comments,
+    author_name: issue.user.login,
+    author_avatar_url: issue.user.avatar_url,
+    reading_time: calculateReadingSeconds(issueContent),
     created_at: issue.created_at,
     updated_at: issue.updated_at,
+    layout: 'post',
   };
 
-  if (!issue.body.includes('<!-- description:')) {
+  if (!issueContent.includes('<!-- description:')) {
     const description = await generateSEODescription(issueContent);
 
     if (description) {
@@ -111,24 +118,27 @@ async function updateIssue(issue) {
 
       // Add hidden HTML comment in the issue body
       const descriptionComment = `<!-- description: ${description} -->`;
-      issue.body = `${descriptionComment}\n${issue.body}`;
+      const newIssueContent = `${descriptionComment}\n${issueContent}`;
 
       if (canUpdateIssue) {
+        console.log("Updating GitHub issue with new description...")
         // Update the issue body on GitHub. This won't trigger a new workflow.
         await octokit.issues.update({
           owner: REPO_OWNER,
           repo: REPO_NAME,
           issue_number: issue.number,
-          body: issue.body,
+          body: newIssueContent,
         });
       }
     }
   } else {
     // Extract the existing description from the HTML comment
-    const descriptionMatch = /<!-- description: (.+?) -->/.exec(issue.body);
+    const descriptionMatch = /<!-- description: (.+?) -->/.exec(issueContent);
     if (descriptionMatch && descriptionMatch[1]) {
       frontMatterData.description = descriptionMatch[1];
     }
+    // Remove comment from exported markdown
+    issueContent = issueContent.replace(/<!-- description: .+? -->\n?/, '');
   }
 
   const frontMatterString = Object.entries(frontMatterData)
