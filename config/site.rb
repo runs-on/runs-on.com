@@ -4,3 +4,6 @@ Sitepress.configure do |config|
   ## Sitepress instance.
   # config.site = Sitepress::Site.new root_path: "."
 end
+
+# fix seed so that generated colors are consistent across builds
+srand(1000)
