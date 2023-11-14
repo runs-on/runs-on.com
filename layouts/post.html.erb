@@ -1,5 +1,5 @@
 <%= render_layout "layout" do %>
   <%= post_meta(current_page) %>
   <%= yield %>
-  <p>You can <%= link_to "comment", current_page.data.issue_url %> on the corresponding GitHub issue.</p>
+  <p>You can <%= link_to "comment", current_page.data.url %> on the corresponding GitHub issue.</p>
 <% end %>
