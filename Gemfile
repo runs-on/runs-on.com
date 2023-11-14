@@ -14,6 +14,7 @@ gem "sass-rails"
 gem "markdown-rails", "~> 2.1.0"
 gem "redcarpet"
 gem "rouge"
+gem "xxhash"
 
 # View component libraries.
 gem "phlex-rails"
