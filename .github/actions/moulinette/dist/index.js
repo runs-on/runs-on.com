@@ -60406,9 +60406,9 @@ function removeIssue(issue) {
 
 async function manageIssue(issue) {
   const labels = issue.labels.map(label => label.name);
+  console.log(`Processing issue ${issue.number} - ${issue.title} with labels ${labels}`)
 
   // remove existing page if any
-  console.log(`Removing issue ${issue.number} - ${issue.title}`)
   removeIssue(issue);
 
   if (labels.includes(PUBLISHED_LABEL)) {
@@ -60423,7 +60423,6 @@ async function run() {
 
     if (eventName === 'issues') {
       const eventData = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH));
-      console.log("eventData", eventData)
       const issue = eventData.issue;
       await manageIssue(issue)
     } else {
