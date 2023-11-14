@@ -4,8 +4,14 @@ nav_title: Blog
 title: All about RunsOn & GitHub Action Runners
 ---
 
+<ul style="padding:0">
 <% sorted_posts.reverse.each do |page| %>
-<ul>
-  <li><span class="date"><%= l(Date.parse(page.data.created_at), format: :default) %></span> <%= link_to_page(page) %></li>
-</ul>
+  <li style="display:block">
+    <div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;">
+      <span><%= link_to_page(page) %></span>
+      <%= post_meta(page) %>
+    </div>
+    <p><%= page.data.description %></p>
+  </li>
 <% end %>
+</ul>

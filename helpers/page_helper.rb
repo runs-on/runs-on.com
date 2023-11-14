@@ -30,8 +30,38 @@ module PageHelper
     end
   end
 
+  def post_meta(post)
+    content_tag :div, style: "display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:1rem;" do
+      concat link_to(image_tag(post.data.author_avatar_url, style: "width: 2rem; border-radius: 50px;"), "https://github.com/#{post.data.author_name}")
+      concat content_tag(:datetime, l(Date.parse(post.data.created_at)))
+      concat(content_tag(:ul, style: "padding:0rem;display:flex;flex-direction:row;gap:1rem;") do
+        post.data.tags.each do |tag|
+          concat post_tag tag
+        end
+      end)
+    end
+  end
+
+  def post_tag(tag)
+    content_tag :span, tag, style: "color:#{string_to_text_color(tag)};background-color:#{string_to_background_color(tag)};padding: 0 0.5rem;border-radius:5px;"
+  end
+
+  def string_to_text_color(tag)
+    hash = tag.hash % 360
+    saturation = 90
+    lightness = 50
+    "hsl(#{hash}, #{saturation}%, #{lightness}%)"
+  end
+
+  def string_to_background_color(tag)
+    hue = (tag.hash + 180) % 360
+    saturation = 80
+    lightness = 60
+    "hsl(#{hue}, #{saturation}%, #{lightness}%)"
+  end
+
   def link_to_page(page)
-    link_to page.data.fetch("nav_title", page.data.fetch("title", page.request_path)), page.request_path
+    link_to page.data.fetch("nav_title", page.data.fetch("title", page.request_path)), page.request_path, class: { current: page == current_page }
   end
 
   def link_to_if_current(text, page, active_class: "active")
