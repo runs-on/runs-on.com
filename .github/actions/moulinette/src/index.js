@@ -10,7 +10,7 @@ const mime = require('mime-types')
 
 const REPO_OWNER = process.env.GITHUB_REPOSITORY.split('/')[0]
 const REPO_NAME = process.env.GITHUB_REPOSITORY.split('/')[1]
-const PUBLISHED_LABEL = core.getInput('published-label') || 'published';
+const PUBLISHED_LABEL = core.getInput('published-label') || 'state:published';
 const ISSUE_EXTENSION = core.getInput('issue-extension') || '.html.md';
 const ISSUE_PATH = core.getInput('issue-path') || 'pages/posts/<issue-number>-<issue-filename>';
 const IMAGE_PATH = core.getInput('image-path') || 'assets/images/posts/<issue-number>-<image-filename>';
