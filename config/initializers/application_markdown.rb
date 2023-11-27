@@ -15,8 +15,7 @@ class ApplicationMarkdown < MarkdownRails::Renderer::Rails
   end
 
   def block_code(code, language)
-    language ||= 'bash'
-    lexer = Rouge::Lexer.find(language)
+    lexer = Rouge::Lexer.find(language) || Rouge::Lexer.find('plaintext')
     content_tag :pre, class: language do
       raw FORMATTER.format(lexer.lex(code))
     end
