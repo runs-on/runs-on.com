@@ -1,0 +1,56 @@
+---
+slug: "how-to-setup-docker-with-nvidia-gpu-support-on-ubuntu-22"
+title: "How to setup docker with NVIDIA GPU support on Ubuntu 22"
+tags: ["hosted-runner"]
+url: "https://github.com/runs-on/runs-on.com/issues/3"
+comments_count: 0
+author_name: "crohr"
+author_avatar_url: "https://avatars.githubusercontent.com/u/6114?v=4"
+reading_time: 62
+created_at: "2023-12-08T14:50:20Z"
+updated_at: "2023-12-08T14:50:20Z"
+layout: "post"
+description: "Learn how to enable GPU support in Docker containers with CUDA drivers and nvidia-container-toolkit. Follow a step-by-step guide to install the necessary components and configure the runtime. Run the container with GPU enabled and check the GPU information with nvidia-smi."
+---
+This took a bit of a search for me, so here it is in case it's useful:
+
+```
+cd /tmp/
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+sudo apt-get update
+sudo apt-get install -y cuda-drivers-545 nvidia-container-toolkit
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+```
+
+Then you should be able to run the following docker container with gpu enabled:
+
+```
+docker run --rm --runtime=nvidia --gpus all ubuntu nvidia-smi
+```
+
+And get the following output:
+
+```
+Fri Dec  8 14:49:32 2023       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 545.23.08              Driver Version: 545.23.08    CUDA Version: 12.3     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  Tesla T4                       On  | 00000000:00:1E.0 Off |                    0 |
+| N/A   29C    P0              25W /  70W |      5MiB / 15360MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+```
