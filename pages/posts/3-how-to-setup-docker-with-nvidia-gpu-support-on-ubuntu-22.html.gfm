@@ -6,11 +6,11 @@ url: "https://github.com/runs-on/runs-on.com/issues/3"
 comments_count: 0
 author_name: "crohr"
 author_avatar_url: "https://avatars.githubusercontent.com/u/6114?v=4"
-reading_time: 62
+reading_time: 78
 created_at: "2023-12-08T14:50:20Z"
-updated_at: "2023-12-08T14:50:20Z"
+updated_at: "2023-12-08T14:50:52Z"
 layout: "post"
-description: "Learn how to enable GPU support in Docker containers with CUDA drivers and nvidia-container-toolkit. Follow a step-by-step guide to install the necessary components and configure the runtime. Run the container with GPU enabled and check the GPU information with nvidia-smi."
+description: "Learn how to enable GPU support for Docker containers using CUDA drivers and the NVIDIA Container Toolkit. Follow a step-by-step guide to install the necessary packages and configure the runtime. Run a sample container with GPU enabled and verify the output to ensure successful setup."
 ---
 This took a bit of a search for me, so here it is in case it's useful:
 
